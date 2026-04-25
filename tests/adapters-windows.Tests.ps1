@@ -1045,7 +1045,10 @@ Describe "uninstall.ps1" {
 
     It "removes hooks from settings.json" {
         $script:uninstallContent | Should -Match 'settings\.json'
-        $script:uninstallContent | Should -Match 'peon\.ps1.*peon\.sh.*notify\.sh.*hook-handle-use'
+        # After #485 the inner-hook filter uses regex literals (peon\.ps1, peon\.sh, ...)
+        # so the source contains a backslash before each dot. Allow optional \ to match
+        # both the older `peon.ps1` form and the current `peon\.ps1` form.
+        $script:uninstallContent | Should -Match 'peon\\?\.ps1.*peon\\?\.sh.*notify\\?\.sh.*hook-handle-use'
     }
 
     It "removes skills" {
